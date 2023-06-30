@@ -1,22 +1,17 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
+import { DatabaseModule } from './common/database/database.module';
 import environment from './config/environment';
-import typeorm from './config/typeorm';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [environment, typeorm],
+      load: [environment],
       cache: true,
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRootAsync({
-      useFactory: (config: ConfigService) => config.get('typeorm'),
-      inject: [ConfigService],
     }),
     LoggerModule.forRoot(),
+    DatabaseModule,
   ],
   controllers: [],
   providers: [],

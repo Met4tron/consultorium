@@ -9,3 +9,43 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Patient {
+  id_patient  Int          @id @default(autoincrement())
+  first_name  String
+  last_name   String
+  email       String       @unique
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  Appointment Appointment?
+}
+
+model Physician {
+  id_physician Int          @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  specialty    String
+  crm          String       @unique
+  email        String       @unique
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+  Appointment  Appointment?
+}
+
+model Appointment {
+  id_appointment Int      @id @default(autoincrement())
+  start          DateTime @default(now())
+  end            DateTime
+  specialty      String
+  crm            String   @unique
+  email          String   @unique
+
+  physician   Physician @relation(fields: [physicianId], references: [id_physician])
+  physicianId Int       @unique
+
+  patient   Patient @relation(fields: [patientId], references: [id_patient])
+  patientId Int     @unique
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
